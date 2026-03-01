@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --font-orbitron: 'Orbitron', monospace;
+  --font-inter: 'Inter', sans-serif;
+  --color-neon: #00ff88;
+  --color-neon-dim: #00cc6a;
+  --color-neon-glow: rgba(0, 255, 136, 0.3);
+  --color-amber-warn: #ffaa00;
+  --color-red-crit: #ff3344;
+  --color-dark-bg: #0a0a0f;
+  --color-dark-card: rgba(15, 15, 25, 0.8);
+  --color-dark-card-solid: #0f0f19;
+  --color-glass: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #0a0a0f;
+  color: #e0e0e0;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0f; }
+::-webkit-scrollbar-thumb { background: #00ff88; border-radius: 3px; }
+
+/* Car Animation */
+@keyframes carDrive {
+  0% { transform: translateX(-120vw); }
+  70% { transform: translateX(0); }
+  85% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+@keyframes wheelSpin {
+  0% { transform: rotate(0deg); }
+  70% { transform: rotate(1080deg); }
+  100% { transform: rotate(1080deg); }
+}
+@keyframes headlightGlow {
+  0%, 70% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes idleVibrate {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-0.5px); }
+  75% { transform: translateY(0.5px); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pulse-neon {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3), 0 0 15px rgba(0, 255, 136, 0.1); }
+  50% { box-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 30px rgba(0, 255, 136, 0.2); }
+}
+@keyframes blink-red {
+  0%, 100% { box-shadow: 0 0 5px rgba(255, 51, 68, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(255, 51, 68, 0.8), 0 0 40px rgba(255, 51, 68, 0.4); }
+}
+@keyframes gridMove {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+}
+@keyframes particleFloat {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+@keyframes circularProgress {
+  from { stroke-dashoffset: 565; }
+}
+@keyframes gaugeNeedle {
+  from { transform: rotate(-90deg); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+.animate-slide-left {
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+.animate-slide-right {
+  animation: slideInRight 0.6s ease-out forwards;
+}
+
+.glass-card {
+  background: rgba(15, 15, 25, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+}
+.glass-card:hover {
+  border-color: rgba(0, 255, 136, 0.3);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.08);
+}
+
+.neon-text {
+  color: #00ff88;
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+.gradient-btn {
+  background: linear-gradient(135deg, #00ff88, #00cc6a);
+  color: #0a0a0f;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  transition: all 0.3s ease;
+}
+.gradient-btn:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.5), 0 0 40px rgba(0, 255, 136, 0.2);
+  transform: translateY(-2px);
+}
+
+.outline-btn {
+  border: 2px solid #00ff88;
+  color: #00ff88;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+.outline-btn:hover {
+  background: rgba(0, 255, 136, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  transform: translateY(-2px);
+}
