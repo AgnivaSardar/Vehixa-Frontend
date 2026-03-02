@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
+import { usersService } from '../services';
 
 interface User {
   id: string;
@@ -15,6 +16,8 @@ interface AuthContextType {
   logout: () => void;
   addVehicle: (vehicleId: string) => void;
   removeVehicle: (vehicleId: string) => void;
+  loading: boolean;
+  error: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,21 +25,29 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [vehicles, setVehicles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const login = async (email: string, _password: string) => {
-    // This is a mock login - replace with actual API call
-    // For demo purposes, any email/password will work
-    const mockUser = {
-      id: '1',
-      name: email.split('@')[0],
-      email: email,
-    };
-    setUser(mockUser);
+  const login = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await usersService.login({ email, password });
+      setUser(response.user);
+      localStorage.setItem('authToken', response.token);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
     setUser(null);
     setVehicles([]);
+    localStorage.removeItem('authToken');
   };
 
   const addVehicle = (vehicleId: string) => {
@@ -57,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         addVehicle,
         removeVehicle,
+        loading,
+        error,
       }}
     >
       {children}

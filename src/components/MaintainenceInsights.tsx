@@ -1,81 +1,42 @@
 import { useInView } from "../hooks/useInView";
-import { AlertOctagon, Droplet, Battery, CircleDot, Snowflake, Wrench, Lightbulb, Clock } from "lucide-react";
-
-interface Insight {
-  icon: typeof AlertOctagon;
-  component: string;
-  condition: string;
-  conditionColor: string;
-  recommendation: string;
-  urgency: 'High' | 'Medium' | 'Low';
-  timeline: string;
-}
-
-const insights: Insight[] = [
-  {
-    icon: AlertOctagon,
-    component: 'Brake Pads',
-    condition: 'Worn — 18% remaining',
-    conditionColor: '#ff3344',
-    recommendation: 'Brake pad replacement recommended within 5 days. Continued use risks reduced braking efficiency and rotor damage.',
-    urgency: 'High',
-    timeline: '2–5 days',
-  },
-  {
-    icon: Droplet,
-    component: 'Engine Oil',
-    condition: 'Low — 22% level',
-    conditionColor: '#ffaa00',
-    recommendation: 'Engine oil change required. Degraded oil reduces lubrication efficiency and accelerates engine wear.',
-    urgency: 'High',
-    timeline: '1–3 days',
-  },
-  {
-    icon: Battery,
-    component: 'Battery',
-    condition: 'Aging — 12.1V',
-    conditionColor: '#ffaa00',
-    recommendation: 'Battery showing signs of degradation. Test battery capacity and consider replacement within 2 weeks.',
-    urgency: 'Medium',
-    timeline: '1–2 weeks',
-  },
-  {
-    icon: CircleDot,
-    component: 'Tires',
-    condition: 'Pressure low — 27 PSI',
-    conditionColor: '#ffaa00',
-    recommendation: 'Inflate tires to manufacturer-recommended 32 PSI. Check for slow leaks or valve stem issues.',
-    urgency: 'Medium',
-    timeline: 'Immediate',
-  },
-  {
-    icon: Snowflake,
-    component: 'Coolant System',
-    condition: 'Temperature elevated',
-    conditionColor: '#ffaa00',
-    recommendation: 'Inspect coolant level and radiator. Flush cooling system if coolant is older than 2 years.',
-    urgency: 'Low',
-    timeline: '1 month',
-  },
-  {
-    icon: Wrench,
-    component: 'Transmission',
-    condition: 'Normal — Monitored',
-    conditionColor: '#00ff88',
-    recommendation: 'Transmission fluid change recommended at 60,000 km. Current mileage: 42,850 km. Schedule ahead.',
-    urgency: 'Low',
-    timeline: '~17,000 km',
-  },
-];
+import { useState, useEffect } from "react";
+import { Lightbulb, Clock } from "lucide-react";
+import { recommendationsService } from "../services";
+import type { Recommendation } from "../services";
 
 const urgencyColors: Record<string, string> = {
-  High: '#ff3344',
-  Medium: '#ffaa00',
-  Low: '#00ff88',
+  high: '#ff3344',
+  medium: '#ffaa00',
+  low: '#00ff88',
 };
 
 export default function MaintenanceInsights() {
   const { ref, isInView } = useInView(0.05);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const { vehiclesService } = await import('../services');
+        const vehicles = await vehiclesService.getAllVehicles();
+        if (vehicles.length > 0) {
+          const recs = await recommendationsService.getRecommendations(vehicles[0].vehicleId);
+          setRecommendations(recs);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load recommendations');
+        console.error('Recommendations error:', err);
+        setRecommendations([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecommendations();
+  }, []);
 
   return (
     <section className="relative py-24 px-4" style={{ background: '#0a0a0f' }}>
@@ -90,10 +51,28 @@ export default function MaintenanceInsights() {
           </p>
         </div>
 
+        {error && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400">
+            {error}
+          </div>
+        )}
+
+        {loading && (
+          <div className="text-center py-12 text-gray-500">
+            <p>Loading recommendations...</p>
+          </div>
+        )}
+
+        {!loading && recommendations.length === 0 && (
+          <div className="text-center py-12 text-gray-400">
+            <p>No maintenance recommendations at this time.</p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {insights.map((ins, i) => (
+          {recommendations.map((rec, i) => (
             <div
-              key={i}
+              key={rec.id}
               className="glass-card p-6 transition-all duration-500 hover:-translate-y-1 group"
               style={{
                 opacity: isInView ? 1 : 0,
@@ -103,35 +82,40 @@ export default function MaintenanceInsights() {
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-[#00ff88]">
-                  <ins.icon size={32} />
+                  <Lightbulb size={32} />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
                     <h3 className="text-sm font-semibold text-white group-hover:text-[#00ff88] transition-colors">
-                      {ins.component}
+                      {rec.title}
                     </h3>
                     <span
                       className="px-2 py-0.5 rounded-full text-xs font-bold"
                       style={{
-                        background: `${urgencyColors[ins.urgency]}15`,
-                        color: urgencyColors[ins.urgency],
-                        border: `1px solid ${urgencyColors[ins.urgency]}30`,
+                        background: `${urgencyColors[rec.severity]}15`,
+                        color: urgencyColors[rec.severity],
+                        border: `1px solid ${urgencyColors[rec.severity]}30`,
                       }}
                     >
-                      {ins.urgency} Priority
+                      {rec.severity}
                     </span>
                   </div>
-                  <p className="text-xs mb-2" style={{ color: ins.conditionColor }}>
-                    {ins.condition}
-                  </p>
                   <p className="text-gray-400 text-sm leading-relaxed mb-3">
-                    <Lightbulb className="inline mr-1" size={16} /> {ins.recommendation}
+                    {rec.description}
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Clock size={14} />
-                    <span>Timeline:</span>
-                    <span className="font-mono text-gray-300">{ins.timeline}</span>
-                  </div>
+                  {rec.estimatedCost && (
+                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                      <span>Estimated Cost: </span>
+                      <span className="font-mono text-gray-300">${rec.estimatedCost}</span>
+                    </div>
+                  )}
+                  {rec.recommendedDate && (
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <Clock size={14} />
+                      <span>Recommended by: </span>
+                      <span className="font-mono text-gray-300">{new Date(rec.recommendedDate).toLocaleDateString()}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
