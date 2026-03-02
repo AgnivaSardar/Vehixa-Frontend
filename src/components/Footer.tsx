@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Car, CheckCircle, Heart } from 'lucide-react';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -20,13 +22,13 @@ export default function Footer() {
           {/* Contact Form */}
           <div>
             <span className="text-xs font-semibold tracking-[0.3em] uppercase text-[#00ff88] mb-3 block">Contact</span>
-            <h2 className="font-[Orbitron] text-2xl sm:text-3xl font-bold text-white mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6">
               Get In <span className="neon-text">Touch</span>
             </h2>
             {sent ? (
               <div className="glass-card p-8 text-center">
-                <span className="text-4xl mb-3 block">✅</span>
-                <p className="text-[#00ff88] font-[Orbitron] text-sm">Message sent successfully!</p>
+                <CheckCircle className="text-[#00ff88] mx-auto mb-3" size={48} />
+                <p className="text-[#00ff88] text-sm">Message sent successfully!</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -55,8 +57,8 @@ export default function Footer() {
           <div>
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-2xl">🚗</span>
-                <span className="font-[Orbitron] font-bold text-xl neon-text">AutoVitals AI</span>
+                <Car className="text-[#00ff88]" size={28} />
+                <span className="font-bold text-xl neon-text">Vehixa</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
                 Intelligent Vehicle Health Evaluation platform powered by cutting-edge AI and machine learning.
@@ -65,20 +67,25 @@ export default function Footer() {
             </div>
 
             <div className="space-y-3">
-              <h4 className="font-[Orbitron] text-xs uppercase tracking-wider text-gray-500">Quick Links</h4>
-              {['Home', 'About', 'Features', 'Live Evaluation', 'Dashboard', 'Alerts'].map(link => (
-                <a
-                  key={link}
-                  href={`#${link.toLowerCase().replace(' ', '-').replace('live-evaluation', 'evaluation')}`}
+              <h4 className="text-xs uppercase tracking-wider text-gray-500">Quick Links</h4>
+              {[
+                { label: 'Home', path: '/' },
+                { label: 'Live Evaluation', path: '/live-evaluation' },
+                { label: 'Dashboard', path: '/dashboard' },
+                { label: 'Contact', path: '/contact' },
+              ].map(link => (
+                <Link
+                  key={link.label}
+                  to={link.path}
                   className="block text-gray-400 text-sm hover:text-[#00ff88] transition-colors"
                 >
-                  → {link}
-                </a>
+                  → {link.label}
+                </Link>
               ))}
             </div>
 
             <div className="mt-8 space-y-2">
-              <h4 className="font-[Orbitron] text-xs uppercase tracking-wider text-gray-500">Tech Stack</h4>
+              <h4 className="text-xs uppercase tracking-wider text-gray-500">Tech Stack</h4>
               <div className="flex flex-wrap gap-2">
                 {['React', 'TypeScript', 'Tailwind CSS', 'Recharts', 'ML/AI', 'Python'].map(t => (
                   <span key={t} className="px-3 py-1 rounded-full text-xs bg-white/5 text-gray-400 border border-white/5">
@@ -93,10 +100,10 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-white/5 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-gray-600 text-xs">
-            © 2024 AutoVitals AI. Built for Hackathon Demo.
+            © 2024 Vehixa. Built for Hackathon Demo.
           </p>
           <p className="text-gray-600 text-xs flex items-center gap-1">
-            Made with <span className="text-[#ff3344]">♥</span> by AutoVitals Team
+            Made with <Heart className="text-[#ff3344]" size={14} fill="#ff3344" /> by Vehixa Team
           </p>
         </div>
       </div>

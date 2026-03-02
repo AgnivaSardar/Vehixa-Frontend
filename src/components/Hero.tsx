@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Rocket, BarChart3 } from 'lucide-react';
 
 function Particles() {
   const particles = Array.from({ length: 30 }, (_, i) => ({
@@ -130,7 +132,7 @@ export default function Hero() {
       <GridEffect />
 
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20">
-        <h1 className="font-[Orbitron] text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-6 animate-fade-in-up">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight mb-6 animate-fade-in-up">
           <span className="text-white">Drive Smart. </span>
           <span className="neon-text">Predict Early.</span>
           <br />
@@ -142,8 +144,12 @@ export default function Hero() {
         </p>
 
         <div className="flex flex-wrap gap-4 justify-center" style={{ animation: 'fadeInUp 0.8s 0.5s ease-out both' }}>
-          <a href="#evaluation" className="gradient-btn text-base">🚀 Get Started</a>
-          <a href="#dashboard" className="outline-btn text-base">📊 View Live Evaluation</a>
+          <Link to="/live-evaluation" className="gradient-btn text-base flex items-center gap-2">
+            <Rocket size={18} /> Get Started
+          </Link>
+          <Link to="/dashboard" className="outline-btn text-base flex items-center gap-2">
+            <BarChart3 size={18} /> View Dashboard
+          </Link>
         </div>
 
         <CarSVG />
