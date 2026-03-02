@@ -84,7 +84,6 @@ export default function LiveEvaluation() {
     
     const outOfRangeParams: string[] = [];
     let parameterInfo = '';
-    let issueInfo = '';
 
     if (text.includes('All parameters within safe operating range')) {
       // All good - no issues
@@ -95,7 +94,6 @@ export default function LiveEvaluation() {
     // Parse new format with bullet points
     if (text.includes('⚠️ Warning:')) {
       const lines = text.split('\n');
-      const warningLine = lines[0]; // "⚠️ Warning: X parameter(s) out of safe range:"
       const paramLines = lines.slice(1).filter(line => line.trim().startsWith('•')); // Bullet point lines
 
       // Extract parameter details
@@ -461,7 +459,7 @@ export default function LiveEvaluation() {
 
                 {/* Top Influential Features */}
                 {result.topInfluentialFeatures && result.topInfluentialFeatures.length > 0 && (() => {
-                  const { outOfRangeParams } = result.diagnosticAnalysis ? formatDiagnosticAnalysis(result.diagnosticAnalysis) : { outOfRangeParams: [] };
+                  const { outOfRangeParams } = result.diagnosticAnalysis ? formatDiagnosticAnalysis(result.diagnosticAnalysis) : { outOfRangeParams: [] as string[] };
                   return (
                     <div className="relative bg-gradient-to-br from-[#00ff88]/5 via-transparent to-transparent border border-[#00ff88]/20 rounded-lg p-5 mb-6 overflow-hidden shadow-lg">
                       {/* Background glow effect */}

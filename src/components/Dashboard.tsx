@@ -385,7 +385,7 @@ export default function Dashboard() {
 
                         {/* Top Influential Features */}
                         {pred.topInfluentialFeatures && pred.topInfluentialFeatures.length > 0 && (() => {
-                          const { outOfRangeParams } = pred.diagnosticAnalysis ? formatDiagnosticAnalysis(pred.diagnosticAnalysis) : { outOfRangeParams: [] };
+                          const { outOfRangeParams } = pred.diagnosticAnalysis ? formatDiagnosticAnalysis(pred.diagnosticAnalysis) : { outOfRangeParams: [] as string[] };
                           return (
                             <div className="relative bg-gradient-to-br from-[#00ff88]/5 via-transparent to-transparent border border-[#00ff88]/20 rounded-lg p-4 overflow-hidden">
                               <div className="absolute top-0 right-0 w-24 h-24 bg-[#00ff88]/10 rounded-full blur-2xl translate-x-1/2 -translate-y-1/2"></div>
@@ -397,8 +397,8 @@ export default function Dashboard() {
                                   <div className="text-xs text-[#00ff88] font-bold tracking-wide">Key Influencing Factors</div>
                                 </div>
                                 <div className="flex flex-wrap gap-2">
-                                  {pred.topInfluentialFeatures.map((feature, i) => {
-                                    const isOutOfRange = outOfRangeParams.includes(String(feature));
+                                  {pred.topInfluentialFeatures.map((feature: string, i: number) => {
+                                    const isOutOfRange = outOfRangeParams.includes(feature);
                                     const bgColor = isOutOfRange ? 'from-orange-500/15 to-orange-500/5' : 'from-[#00ff88]/15 to-[#00ff88]/5';
                                     const textColor = isOutOfRange ? 'text-orange-400' : 'text-[#00ff88]';
                                     const borderColor = isOutOfRange ? 'border-orange-500/40' : 'border-[#00ff88]/40';
@@ -410,7 +410,7 @@ export default function Dashboard() {
                                         className={`bg-gradient-to-r ${bgColor} ${textColor} text-[10px] font-semibold px-3 py-1.5 rounded-full border ${borderColor} shadow-sm ${shadowColor} hover:scale-105 transition-all duration-200`}
                                       >
                                         {isOutOfRange && <span className="mr-1">⚠️</span>}
-                                        {typeof feature === 'string' ? feature.replace(/_/g, ' ') : feature}
+                                        {feature.replace(/_/g, ' ')}
                                       </span>
                                     );
                                   })}

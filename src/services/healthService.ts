@@ -28,6 +28,12 @@ export interface LiveEvaluationRequest {
   ambientTemperature?: number;
   coolantLevel?: number;
   errorCodesCount?: number;
+  engine_rpm?: number;
+  lub_oil_pressure?: number;
+  fuel_pressure?: number;
+  coolant_pressure?: number;
+  lub_oil_temp?: number;
+  coolant_temp?: number;
 }
 
 export interface LiveEvaluationResponse {
@@ -46,6 +52,14 @@ export interface LiveEvaluationResponse {
     suspension: number;
   };
   recommendations: string[];
+  diagnosticAnalysis?: string;
+  topInfluentialFeatures?: string[];
+  alert?: {
+    alertType: string;
+    severity: string;
+    title: string;
+    message: string;
+  } | null;
 }
 
 export const healthService = {
